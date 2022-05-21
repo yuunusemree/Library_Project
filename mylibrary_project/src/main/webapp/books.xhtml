@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Books</title>
+    </h:head>
+
+    <h:body>
+        <p:growl id="messages" />
+
+        <p:panel style="text-align: center">
+            <p:dataTable id="bookListSize" value="#{bookController.bookList.size()}" var="bookListSize">
+                <p:column headerText="Toplam Kitap Sayısı" >
+                    <p:outputLabel value="#{bookListSize}" />
+                </p:column>
+            </p:dataTable>
+
+            <p:dataTable id="reservedBookNumber" value="#{bookController.reservedBookNumber}" var="reservedBookNumber">
+                <p:column headerText="Rezerve Edilmiş Kitap Sayısı" >
+                    <p:outputLabel value="#{reservedBookNumber}" />
+                </p:column>
+            </p:dataTable>
+            <p:dataTable id="userListSize" value="#{userController.userList.size()}" var="userListSize">
+                <p:column headerText="Kullanıcı Sayısı" >
+                    <p:outputLabel value="#{userListSize}" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:panel>
+            <p:dataTable id="bookTable" value="#{bookController.bookList}" var="book">
+                <p:column headerText="ID" style="width: 60px; text-align: center" >
+                   <p:outputLabel value="#{book.id}" />
+                </p:column>
+                <p:column headerText="Name" >
+                    <p:outputLabel value="#{book.bookName}" />
+                </p:column>
+                <p:column headerText="Author" style="text-align: center; width: 160px;" >
+                    <p:outputLabel value="#{book.author.authorName}" />
+                </p:column>
+                <p:column headerText="Description" >
+                    <p:outputLabel value="#{book.description}" />
+                </p:column>
+                <p:column headerText="Status" style="width: 100px; text-align: center"  >
+                    <p:outputLabel value="#{book.bookStatus}" />
+                </p:column>
+                <p:column headerText="User" style="text-align: center" >
+                    <p:outputLabel value="#{book.user.username}" />
+                </p:column>
+                <p:column headerText="Operations">
+                    <h:form>
+                        <p:commandButton value="Detail" action="/bookdetail" />
+                        <p:commandButton value="Edit" update=":bookForm"
+                                         action="#{bookController.setSelectedBook(book)}"
+                                         oncomplete="PF('bookDialog').show()" style="size: 20px"/>
+                        <p:commandButton value="Remove"
+                                         action="#{bookController.deleteBook(book)}"
+                                         update=":bookTable, :messages, :bookListSize"
+                                         style="margin-left: 10px; size: 20px">
+                            <p:confirm header="Confirmation" message="Are you sure want to delete?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:commandButton value="Get"
+                                         action="#{userController.orderBook(book)}"
+                                         update=":bookTable, :reservedBookNumber, :messages"
+                                         style="margin-left: 10px; size: 20px">
+                            <p:confirm header="Confirmation" message="Are you sure want to reserve?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </h:form>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+        <br />
+        <h:form>
+            <p:commandButton value="Add Book"
+                             action="#{bookController.clear()}"
+                             update=":bookForm"
+                             oncomplete="PF('bookDialog').show()"
+                             resetValues="true" />
+
+            <p:linkButton outcome="authors" value="Authors" style="margin-left:20px;" />
+            <p:linkButton outcome="userbooks" value="My Books" style="margin-left:20px;" />
+
+        </h:form>
+
+        <p:dialog widgetVar="bookDialog" closeOnEscape="true" modal="true" header="Book">
+            <h:form id="bookForm">
+                <p:messages />
+                <p:focus />
+                <p:panelGrid columns="2">
+                    Id:
+                    <p:inputText value="#{bookController.book.id}" />
+
+                    Name:
+                    <p:inputText value="#{bookController.book.bookName}" />
+
+                    Author:
+                    <p:selectOneMenu value="#{bookController.book.author}"
+                                     converter="#{authorConverter}">
+                        <f:selectItems value="#{bookController.authorList}"
+                                       var="author"
+                                       itemLabel="#{author.authorName}"
+                                       itemValue="#{author}"/>
+                    </p:selectOneMenu>
+
+                    Description:
+                    <p:inputText value="#{bookController.book.description}" />
+
+                    Status:
+                    <p:inputText value="#{bookController.book.bookStatus}" />
+
+                </p:panelGrid>
+                <p:commandButton value="Save"
+                                 actionListener="#{bookController.saveBook(bookController.book)}"
+                                 update="bookForm, :bookTable, :messages, :bookListSize"
+                                 oncomplete="handleDialogSubmit(args, 'bookDialog')" />
+            </h:form>
+        </p:dialog>
+
+        <h:form>
+            <p:confirmDialog global="true" closeOnEscape="true">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+
+        <script type="text/javascript">
+            function handleDialogSubmit(args, dialogName) {
+                if (!args.validationFailed) {
+                    PF(dialogName).hide();
+                }
+            }
+        </script>
+    </h:body>
+</html>

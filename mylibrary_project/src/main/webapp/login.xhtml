@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Library login</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" />
+        <style type="text/css">
+            body {
+                background-color: #3e3e3e;
+                color: white;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <p:growl id="messages" />
+        <div class="container">
+            <h:form class="form-signin" method="post" >
+                <h2 class="form-signin-heading">Please login to Library</h2>
+                <p>
+                    <p:outputLabel value="Username:" />
+                    <p:inputText type="text" id="username" name="username" value="#{loginController.username}" class="form-control" />
+                </p>
+                <p>
+                    <p:outputLabel value="Password:" />
+                    <p:inputText type="password" id="password" name="password" value="#{loginController.password}" class="form-control" />
+                </p>
+                <p:commandButton value="Login" action="#{loginController.loginUser()}"
+                                 class="btn btn-lg btn-primary btn-block" update=":messages" type="submit">
+                </p:commandButton>
+
+                <p:linkButton outcome="register" value="Register" class="btn btn-lg btn-primary btn-block"/>
+            </h:form>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Authors</title>
+    </h:head>
+
+    <h:body>
+        <p:growl id="messages" />
+        <p:dataTable id="authorTable" value="#{authorController.authorList}" var="author" >
+            <p:column headerText="ID">
+                <p:outputLabel value="#{author.id}" />
+            </p:column>
+            <p:column headerText="Name" >
+                <p:outputLabel value="#{author.authorName}" />
+            </p:column>
+            <p:column headerText="Operations">
+                <h:form>
+                    <p:commandButton value="Edit" action="#{authorController.setAuthor(author)}"
+                                     update=":authorForm"
+                                     resetValues="true"
+                                     oncomplete="PF('authorDialog').show()" />
+                    <p:commandButton value="Remove"
+                                     action="#{authorController.deleteAuthor(author)}"
+                                     update=":authorTable, :messages"
+                                     style="margin-left: 20px;">
+                        <p:confirm header="Confirmation" message="Are you sure want to delete?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </h:form>
+            </p:column>
+        </p:dataTable>
+
+        <br />
+        <h:form>
+            <p:commandButton value="Add Author"
+                             action="#{authorController.clear()}"
+                             update=":authorForm"
+                             oncomplete="PF('authorDialog').show()"
+                             resetValues="true" />
+
+            <p:linkButton outcome="books" value="Books" style="margin-left:20px;" />
+
+        </h:form>
+
+
+        <p:dialog widgetVar="authorDialog" closeOnEscape="true" modal="true" header="Author">
+            <h:form id="authorForm">
+                <p:messages />
+                <p:focus />
+                <p:panelGrid columns="2">
+                    ID:
+                    <p:inputText value="#{authorController.author.id}" />
+
+                    Author:
+                    <p:inputText value="#{authorController.author.authorName}"/>
+
+                </p:panelGrid>
+                <p:commandButton value="Save"
+                                 action="#{authorController.saveAuthor()}"
+                                 update="authorForm, :authorTable, :messages"
+                                 oncomplete="handleDialogSubmit(args, 'authorDialog')" />
+            </h:form>
+        </p:dialog>
+
+        <h:form>
+            <p:confirmDialog global="true" closeOnEscape="true">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+
+        <script type="text/javascript">
+            function handleDialogSubmit(args, dialogName) {
+                if (!args.validationFailed) {
+                    PF(dialogName).hide();
+                }
+            }
+        </script>
+    </h:body>
+</html>

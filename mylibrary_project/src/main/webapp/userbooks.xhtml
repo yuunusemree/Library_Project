@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>My Books</title>
+    </h:head>
+
+    <h:body>
+        <p:growl id="messages" />
+        <p:dataTable id="userBookTable" value="#{userController.userBookList}" var="userBook">
+            <p:column headerText="id">
+                <p:outputLabel value="#{userBook.id}" />
+            </p:column>
+            <p:column headerText="Name">
+                <p:outputLabel value="#{userBook.bookName}" />
+            </p:column>
+            <p:column headerText="Author">
+                <p:outputLabel value="#{userBook.author.authorName}" />
+            </p:column>
+            <p:column headerText="Description">
+                <p:outputLabel value="#{userBook.description}" />
+            </p:column>
+            <p:column headerText="Status">
+                <p:outputLabel value="#{userBook.bookStatus}" />
+            </p:column>
+            <p:column headerText="Reservation Date">
+                <p:outputLabel value="#{userBook.reservation.reservationDate}" />
+            </p:column>
+            <p:column headerText="Return Date">
+                <p:outputLabel value="#{userBook.reservation.returnDate}" />
+            </p:column>
+            <p:column headerText="Operations">
+                <h:form>
+                    <p:commandButton value="Give back"
+                                     action="#{userController.giveBackBook(userBook)}"
+                                     update=":userBookTable, :messages">
+                        <p:confirm header="Confirmation" message="Are you sure want to give back?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </h:form>
+            </p:column>
+        </p:dataTable>
+
+        <h:form style="margin-top: 15px">
+            <p:linkButton outcome="authors" value="Authors" style="margin-left:20px;" />
+            <p:linkButton outcome="books" value="Books" style="margin-left:20px;" />
+        </h:form>
+
+        <h:form style="margin-left:20px; margin-top: 15px">
+            <p:commandButton value="Logout"  action="#{loginController.logoutUser()}" />
+        </h:form>
+
+        <h:form>
+            <p:confirmDialog global="true" closeOnEscape="true">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+
+    </h:body>
+</html>
